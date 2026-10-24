@@ -389,18 +389,37 @@ def process_pgn_file(pgn_path, target_player, min_games, progress_callback):
 
 
 def save_outputs(pgn_path, target_player, rows):
-    """Copy the raw PGN to data/raw and write the CSV to data/processed."""
+    """
+    Copy the raw PGN to data/raw (unique name) and write the CSV to
+    data/processed under ONE fixed name per player. The CSV is written to a
+    temporary file first and only replaces the old CSV once writing succeeds.
+    """
     create_folders()
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
+    # 1. Unique copy of the uploaded PGN (same behaviour as before)
     raw_base = f"{safe_name(pgn_path.stem)}_{stamp}"
     raw_path = make_unique_path(RAW_DIR, raw_base, ".pgn")
     shutil.copy2(pgn_path, raw_path)          # original file is left untouched
 
-    csv_base = f"{safe_name(pgn_path.stem)}_{safe_name(target_player)}_{stamp}_positions"
-    csv_path = make_unique_path(PROCESSED_DIR, csv_base, ".csv")
-    data_frame = pd.DataFrame(rows, columns=CSV_COLUMNS)
-    data_frame.to_csv(csv_path, index=False, encoding="utf-8")
+    # 2. Fixed CSV filename based on the player's name
+    player_norm = normalize_name(target_player)
+    if player_norm in ("hikaru nakamura", "hikaru"):
+        csv_name = "hikaru_positions.csv"
+    else:
+        csv_name = f"{safe_name(player_norm).lower()}_positions.csv"
+    csv_path = PROCESSED_DIR / csv_name
+    temp_path = PROCESSED_DIR / f"{csv_name}.{stamp}.tmp"
+
+    # 3. Write to a temp file, then replace the old CSV only if that worked
+    try:
+        data_frame = pd.DataFrame(rows, columns=CSV_COLUMNS)
+        data_frame.to_csv(temp_path, index=False, encoding="utf-8")
+        temp_path.replace(csv_path)           # replaces the old CSV in one step
+    except Exception:
+        temp_path.unlink(missing_ok=True)     # remove the leftover temp file
+        logger.exception("Could not write CSV; previous CSV (if any) was kept")
+        raise                                 # worker() shows the error in the GUI
 
     logger.info("Saved raw PGN to %s and CSV to %s", raw_path, csv_path)
     return raw_path, csv_path
