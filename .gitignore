@@ -1,0 +1,57 @@
+# Python environment and cache
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Raw training datasets
+data/
+*.pgn
+
+# Stockfish source tree and build artifacts
+stockfish/src/
+stockfish/wiki/
+stockfish/scripts/
+stockfish/.git/
+
+# Large generated model artifacts — review before including
+
+# Generated log
+data_loader.log
+
+# Stockfish source and documentation (keep the executable)
+stockfish/src/
+stockfish/wiki/
+stockfish/scripts/
+stockfish/.git/
+
+# Large files stored separately
+models/hikaru_move_model.joblib
+stockfish/stockfish-windows-x86-64-universal.exe
+
+# Generated log
+data_loader.log
+
+# Generated logs
+data_loader.log
+
+# Trained model (can be regenerated)
+models/*.joblib
+
+# Stockfish source and documentation
+stockfish/src/
+stockfish/wiki/
+stockfish/scripts/
+stockfish/.git/

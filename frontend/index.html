@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ChessLab | Build a Player Model</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">♞</div><div><b>ChessLab</b><small>PLAYER ANALYTICS</small></div></div>
+  <p class="nav-label">WORKSPACE</p>
+  <div class="nav active">▦ &nbsp; Build player model</div>
+  <a class="nav" id="analysisNav" href="/analysis">♟ &nbsp; Chess analysis</a>
+  <div class="side-foot"><i></i><div><b>Local workspace</b><small>Models stay on your machine</small></div></div>
+</aside>
+<main>
+  <header><div>Workspace <span>/</span> <b>Build player model</b></div><label class="top-tag">● CHESS ML PROJECT</label></header>
+  <section class="intro"><label>PLAYER MODELLING WORKSPACE</label><h1>Build a player model<span>.</span></h1><p>Train on a player's historical games, then explore how they might play any position.</p></section>
+  <div class="columns">
+    <section class="panel setup">
+      <div class="section-title"><div class="number">01</div><div><h2>Game data</h2><p>Choose a PGN file containing chess games.</p></div></div>
+      <label class="dropzone" id="dropzone" for="pgnFile">
+        <input type="file" id="pgnFile" accept=".pgn">
+        <div class="upload-icon">↑</div><b id="fileTitle">Drop your PGN file here</b>
+        <p id="fileSub">or <em>browse files</em> on your computer</p>
+        <small>PGN FORMAT &nbsp;·&nbsp; MULTIPLE GAMES SUPPORTED</small>
+      </label>
+      <div class="field"><label for="playerName">Target player's name</label><input id="playerName" placeholder="e.g. Hikaru Nakamura"><small>Use the name as it appears in the PGN headers where possible.</small></div>
+      <div class="field"><label for="modelName">Model name <span class="optional">OPTIONAL</span></label><input id="modelName" placeholder="e.g. Hikaru — blitz games"><small>A label to identify this saved model later.</small></div>
+      <div class="notice"><span>i</span><p>Use a PGN with at least 100 valid games and at least 100 games featuring the target player. Training can take a while for large files.</p></div>
+      <button id="processButton">Process games &amp; build model <b>→</b></button><div id="error" role="alert"></div><div id="progressArea" hidden><div class="progress-label"><span id="progressMessage">Waiting…</span><b id="progressPercent">0%</b></div><div class="progress-track"><div id="progressFill"></div></div><pre id="logOutput"></pre></div>
+    </section>
+    <div class="right">
+      <section class="panel pipeline">
+        <div class="panel-head"><div><label>PIPELINE OVERVIEW</label><h2>From PGN to predictions</h2></div><span class="pill">5 STEPS</span></div>
+        <div class="stage" id="stage1"><div class="stage-icon">▤</div><div><b>Read PGN</b><small>Inspect games and player headers</small></div><span>01</span></div><div class="connector"></div>
+        <div class="stage" id="stage2"><div class="stage-icon">♟</div><div><b>Extract positions</b><small>Keep positions for the target player</small></div><span>02</span></div><div class="connector"></div>
+        <div class="stage" id="stage3"><div class="stage-icon">⌘</div><div><b>Generate features</b><small>Describe legal candidate moves</small></div><span>03</span></div><div class="connector"></div>
+        <div class="stage" id="stage4"><div class="stage-icon">◈</div><div><b>Train &amp; evaluate</b><small>Learn and test move rankings</small></div><span>04</span></div><div class="connector"></div>
+        <div class="stage" id="stage5"><div class="stage-icon">✓</div><div><b>Save player model</b><small>Make it available for analysis</small></div><span>05</span></div>
+      </section>
+      <section class="panel summary">
+        <div class="panel-head"><div><label>AFTER PROCESSING</label><h2>Model summary</h2></div><span class="pending" id="summaryStatus">AWAITING DATA</span></div>
+        <div class="stats">
+          <div><small>Player games</small><b id="metricGames">—</b></div><div><small>Positions</small><b id="metricPositions">—</b></div>
+          <div><small>Candidate rows</small><b id="metricCandidates">—</b></div><div><small>Top-1 test accuracy</small><b id="metricTop1">—</b></div>
+        </div>
+        <p class="footnote" id="summaryFootnote">The model is ranked on held-out games, not randomly split candidate rows.</p>
+      </section>
+    </div>
+  </div>
+  <footer><span>ChessLab · Player move modelling</span><span>PGN → ML MODEL → CHESS ANALYSIS</span></footer>
+</main>
+</div>
+<script src="script.js"></script>
+</body></html>
